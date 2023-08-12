@@ -1,0 +1,58 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: 'Raleway', sans-serif;
+    height: 100vh;
+    margin: 0;
+}
+
+header {
+    color: darkgrey;
+    font-size: 6vmin;
+    letter-spacing: 2vmin;
+}
+
+h2 {
+    font-size: 5vmin;
+    color: grey;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 2vmin;
+    color: grey;
+    margin-bottom:  50px;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, 15vmin);
+    grid-template-rows: repeat(3, 15vmin);
+    grid-column-gap: 15px;
+    grid-row-gap: 15px;
+    /* background-color: black; */
+
+}
+
+/* #board:hover {
+    background-color: brown;;
+}  */
+
+button {
+    color: grey;
+    border: 0.1vmin solid grey;
+    border-radius: 2vmin;
+    font-size: 4vmin;
+    margin-top: 4vmin;
+}
+
+button:hover {
+    color: white;
+    background-color: darkgrey;
+}
