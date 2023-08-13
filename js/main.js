@@ -1,16 +1,22 @@
 /*----- constants -----*/
 
+const NAMES = {
+    0: 'nobody',
+    1: 'PLAYER 1',
+ '-1': 'PLAYER 2'
+}
+
 const COLORS = {
-       0: 'white',
-       1: 'lightgreen',
-    '-1': 'lightblue'
+    0: 'white',
+    1: '#00b33c', // green
+ '-1': '#3385ff'  // blue
 }
 
 const ERRORS = {
     0: 'Welcome!',  // no error
     1: 'SQUARE ALREADY TAKEN. TRY ANOTHER SQUARE',
+    2: 'GAME IS OVER. HIT "Reset Game" TO PLAY AGAIN'
 }
-
 
 /*----- state variables -----*/
 
@@ -26,48 +32,68 @@ const messageEl = document.querySelector('h2')
 const errMessageEl = document.querySelector('h3')
 const playBtn = document.querySelector('button')
 const boardEls = [...document.querySelectorAll('#board > div')]
-// console.log(boardEls)
 
 /*----- event listeners -----*/
 
-// grabbing the marker section with all those divs
-document.getElementById('c0r0').addEventListener('click', handleChoicec0r0)
-document.getElementById('c0r1').addEventListener('click', handleChoicec0r1)
-document.getElementById('c0r2').addEventListener('click', handleChoicec0r2)
-document.getElementById('c1r0').addEventListener('click', handleChoicec1r0)
-document.getElementById('c1r1').addEventListener('click', handleChoicec1r1)
-document.getElementById('c1r2').addEventListener('click', handleChoicec1r2)
-document.getElementById('c2r0').addEventListener('click', handleChoicec2r0)
-document.getElementById('c2r1').addEventListener('click', handleChoicec2r1)
-document.getElementById('c2r2').addEventListener('click', handleChoicec2r2)
 playBtn.addEventListener("click", init);
 
 /*----- functions -----*/
-init()
 
-// function start our game 
 function init() {
+
+    // I couldn't figure out how to have one listener to process 
+    // all the quadrants.
+    document.getElementById('c0r0').addEventListener('click', handleChoicec0r0)
+    document.getElementById('c0r1').addEventListener('click', handleChoicec0r1)
+    document.getElementById('c0r2').addEventListener('click', handleChoicec0r2)
+    document.getElementById('c1r0').addEventListener('click', handleChoicec1r0)
+    document.getElementById('c1r1').addEventListener('click', handleChoicec1r1)
+    document.getElementById('c1r2').addEventListener('click', handleChoicec1r2)
+    document.getElementById('c2r0').addEventListener('click', handleChoicec2r0)
+    document.getElementById('c2r1').addEventListener('click', handleChoicec2r1)
+    document.getElementById('c2r2').addEventListener('click', handleChoicec2r2)
+
     // assign our vars to the starting values
     board = [  // col 0    col1    col2
-			       [0,       0,      0],   // row 0
-		           [0,       0,      0],   // row 1
-			       [0,       0,      0]    // row 2
+			            [0,       0,      0],   // row 0
+		              [0,       0,      0],   // row 1
+			            [0,       0,      0]    // row 2
 		]
     turn = 1
     winner = null
+    error = 0;
+    messageEl.style.fontSize = "5vmin";
     render()
 }
 
-function handlcChoice(colIdx,rowIdx) {
-    error = 0; // re-init error. 
-    if ( board[colIdx][rowIdx] ) {
-      error = 1; // square taken
-    } else  {
-      board[colIdx][rowIdx] = turn
-      winner = decideWinner();
+function handlcChoice(colIdx,rowIdx) 
+{
+    // For some reason, I couldn't get removeListener
+    // to work. So, by putting in this check for 
+    // winner === null, it short-circuits the click event
+    if ( winner === null ) 
+    {
+      error = 0; // re-init error. 
+      if ( board[colIdx][rowIdx] ) 
+      {
+          if ( winner ) {
+            error = 2; // game over
+          } else {
+            error = 1; // square taken
+          }
+      } 
+      else  
+      {
+          board[colIdx][rowIdx] = turn
+          winner = decideWinner();
+          if ( winner ) { 
+            error = 2 
+            console.log(`winner is ${winner}`);
+          }
+      }
       turn *= -1
+      render()
     }
-    render()
 }
 
 function decideWinner3inArow(val1, val2, val3) {
@@ -121,23 +147,31 @@ function decideWinnerDiagnolDown() {
 }
 
 function decideWinnerTie() {
-  let player1 = 0;
-  let player2 = 0;
-  for (row = 0; row < 3; row++) {
-    for (col = 0; col < 3; col++ ) {
-      val = board[col][row];
-      if ( val === 1 ) {
-        player1++;
-      } else if ( val === -1 ) {
-        player2++;
-      }
+
+    let player1 = 0;
+    let player2 = 0;
+    for (row = 0; row < 3; row++) 
+    {
+        for (col = 0; col < 3; col++ ) 
+        {
+            val = board[col][row];
+            if ( val === 1 ) {
+                player1++;
+            } else if ( val === -1 ) {
+                player2++;
+            }
+        }
     }
-  }
-  if ( player1 + player2 === 9 ) {
-    return 'T';
-  } else {
-    return null;
-  }
+    let total = player1 + player2;
+    //console.log("player1 + player2 = " + total);
+    if ( total === 9 ) 
+    {
+       return 'T';
+    } 
+    else 
+    {
+       return null;
+    }
 }
 
 function decideWinner() {
@@ -155,6 +189,8 @@ function decideWinner() {
 
     win = decideWinnerTie();
     if ( win ) { return win; }
+
+    return null; // no winner
 }
 
 // anytime we hand a function to an event lister we will be handed back an event
@@ -174,7 +210,7 @@ function render() {
     renderBoard()
     renderMessage()
     renderErrorMessage()
-    //renderControls()
+    renderControls()
 } 
 
 function renderBoard() {
@@ -192,18 +228,20 @@ function renderBoard() {
 
 function renderMessage() {
     // messaging if there is a tie
+    //console.log(winner);
     if (winner === 'T') {
         messageEl.innerText = 'Tie!!!!'
     } else if (winner) {
         messageEl.innerHTML = `
             <span style="color: ${COLORS[winner]}">
-                ${COLORS[winner].toUpperCase()} Wins!
+                ${NAMES[winner].toUpperCase()} Wins!
             </span>
         `
+        celebrateWin();
     } else {
         messageEl.innerHTML = `
             <span style="color: ${COLORS[turn]}">
-                ${COLORS[turn].toUpperCase()}'s Turn
+                ${NAMES[turn].toUpperCase()}'s Turn
             </span>
         `
     }
@@ -222,5 +260,42 @@ function renderErrorMessage() {
 }
 
 function renderControls() {
-
+  playBtn.style.visibility = winner ? 'visible' : 'hidden';
+  if ( winner ) {
+    // This code is not really working. I don't know why. I need to 
+    // short-circuit the click event on a quadrant by checking to see
+    // if a winner had been declared yet.
+    document.getElementById('c0r0').removeEventListener('click', doNothing)
+    document.getElementById('c0r1').removeEventListener('click', doNothing)
+    document.getElementById('c0r2').removeEventListener('click', doNothing)
+    document.getElementById('c1r0').removeEventListener('click', doNothing)
+    document.getElementById('c1r1').removeEventListener('click', doNothing)
+    document.getElementById('c1r2').removeEventListener('click', doNothing)
+    document.getElementById('c2r0').removeEventListener('click', doNothing)
+    document.getElementById('c2r1').removeEventListener('click', doNothing)
+    document.getElementById('c2r2').removeEventListener('click', doNothing)
+  }
 }
+
+function doNothing() {
+    //console.log("doing nothing")
+}
+
+function celebrateWin() 
+{
+  let id = null;
+  let size = 0;
+  clearInterval(id);
+  id = setInterval(frame, 200);
+  function frame() {
+    if ( size === 100 ) {
+      clearInterval(id);
+    } else {
+      size += 10;
+      messageEl.style.fontSize = size + "px";
+    }
+  }
+}
+
+//// START HERE //////
+init()
