@@ -120,6 +120,26 @@ function decideWinnerDiagnolDown() {
     return null; 
 }
 
+function decideWinnerTie() {
+  let player1 = 0;
+  let player2 = 0;
+  for (row = 0; row < 3; row++) {
+    for (col = 0; col < 3; col++ ) {
+      val = board[col][row];
+      if ( val === 1 ) {
+        player1++;
+      } else if ( val === -1 ) {
+        player2++;
+      }
+    }
+  }
+  if ( player1 + player2 === 9 ) {
+    return 'T';
+  } else {
+    return null;
+  }
+}
+
 function decideWinner() {
     win = decideWinnerColumns();
     if ( win ) { return win; }
@@ -131,6 +151,9 @@ function decideWinner() {
     if ( win ) { return win; }
 
     win = decideWinnerDiagnolDown();
+    if ( win ) { return win; }
+
+    win = decideWinnerTie();
     if ( win ) { return win; }
 }
 
@@ -198,4 +221,6 @@ function renderErrorMessage() {
   errMessageEl.innerHTML = `<span style="color: ${color}"> ${errorMessage} </span>`
 }
 
+function renderControls() {
 
+}
