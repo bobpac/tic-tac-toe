@@ -1,6 +1,6 @@
 /*----- constants -----*/
 
-const PLAYER_PIECES = {
+const COLORS = {
        0: 'white',
        1: 'lightgreen',
     '-1': 'lightblue'
@@ -64,10 +64,76 @@ function handlcChoice(colIdx,rowIdx) {
       error = 1; // square taken
     } else  {
       board[colIdx][rowIdx] = turn
+      winner = decideWinner();
       turn *= -1
     }
     render()
 }
+
+function decideWinner3inArow(val1, val2, val3) {
+  // do we have the same value for these three squares;
+  // console.log(`val1 = ${val1} val2 = ${val2} val3 = ${val3}`);
+  if ( val1 === val2 && val2 === val3 && val1 !== 0 ) {
+    return turn;
+  } else {
+    return null;
+  }
+}
+
+function decideWinnerColumns () {
+    for (col = 0; col < 3; col++) {
+        val1 = board[col][0];
+        val2 = board[col][1];
+        val3 = board[col][2];
+        win = decideWinner3inArow(val1, val2, val3);
+        if ( win ) { return win; }
+    }
+    return null;
+}
+
+function decideWinnerRows() {
+    for (row = 0; row < 3; row++) {
+        val1 = board[0][row];
+        val2 = board[1][row];
+        val3 = board[2][row];
+        win = decideWinner3inArow(val1, val2, val3);
+        if ( win ) { return win; }
+    }
+    return null;
+}
+
+function decideWinnerDiagnolUp() {
+    val1 = board[2][0];
+    val2 = board[1][1];
+    val3 = board[0][2];
+    win = decideWinner3inArow(val1, val2, val3);
+    if ( win ) { return win; }
+    return null; 
+}
+
+function decideWinnerDiagnolDown() {
+    val1 = board[0][0];
+    val2 = board[1][1];
+    val3 = board[2][2];
+    win = decideWinner3inArow(val1, val2, val3);
+    if ( win ) { return win; }
+    return null; 
+}
+
+function decideWinner() {
+    win = decideWinnerColumns();
+    if ( win ) { return win; }
+
+    win = decideWinnerRows();
+    if ( win ) { return win; }
+
+    win = decideWinnerDiagnolUp();
+    if ( win ) { return win; }
+
+    win = decideWinnerDiagnolDown();
+    if ( win ) { return win; }
+}
+
 // anytime we hand a function to an event lister we will be handed back an event
 // event - the event that happened
 function handleChoicec0r0(event) { handlcChoice(0,0); }
@@ -96,7 +162,7 @@ function renderBoard() {
             const cellId = `c${colIdx}r${rowIdx}`
             const cellEl = document.getElementById(cellId)
             //console.log('renderBoard' + cellEl);
-            cellEl.style.backgroundColor = PLAYER_PIECES[cellVal];
+            cellEl.style.backgroundColor = COLORS[cellVal];
         })
     })
 }
@@ -107,14 +173,14 @@ function renderMessage() {
         messageEl.innerText = 'Tie!!!!'
     } else if (winner) {
         messageEl.innerHTML = `
-            <span style="color: ${PLAYER_PIECES[winner]}">
-                ${PLAYER_PIECES[winner].toUpperCase()} Wins!
+            <span style="color: ${COLORS[winner]}">
+                ${COLORS[winner].toUpperCase()} Wins!
             </span>
         `
     } else {
         messageEl.innerHTML = `
-            <span style="color: ${PLAYER_PIECES[turn]}">
-                ${PLAYER_PIECES[turn].toUpperCase()}'s Turn
+            <span style="color: ${COLORS[turn]}">
+                ${COLORS[turn].toUpperCase()}'s Turn
             </span>
         `
     }
@@ -124,23 +190,12 @@ function renderErrorMessage() {
 
   let errorMessage = ERRORS[error];
 
-    if (error === 0) {
-      color = "white"
-    } else {
-      color = "red"
-    }
-    errMessageEl.innerHTML = `<span style="color: ${color}"> ${errorMessage} </span>`
+  if (error === 0) {
+    color = "white"
+  } else {
+    color = "red"
+  }
+  errMessageEl.innerHTML = `<span style="color: ${color}"> ${errorMessage} </span>`
 }
 
-function renderControls() {
-    // hide it on first load show once there is a game over
-    playBtn.style.visibility = winner ? 'visible' : 'hidden'
 
-    // if there is a winner we should not be able to place a disc
-    // quadrantEls.forEach(function(quadrantEl, colIdx) {
-    //     // if there is a tie or if the column is full
-    //     const hideMarker = !board[colIdx].includes(0) || winner
-
-    //     markerEl.style.visibility = hideMarker ? 'hidden' : 'visible'
-    // })
-}
