@@ -32,6 +32,15 @@ const messageEl = document.querySelector('h2')
 const errMessageEl = document.querySelector('h3')
 const playBtn = document.querySelector('button')
 const boardEls = [...document.querySelectorAll('#board > div')]
+const c0r0El = document.getElementById('c0r0')
+const c0r1El = document.getElementById('c0r1')
+const c0r2El = document.getElementById('c0r2')
+const c1r0El = document.getElementById('c1r0')
+const c1r1El = document.getElementById('c1r1')
+const c1r2El = document.getElementById('c1r2')
+const c2r0El = document.getElementById('c2r0')
+const c2r1El = document.getElementById('c2r1')
+const c2r2El = document.getElementById('c2r2')
 
 /*----- event listeners -----*/
 
@@ -43,15 +52,15 @@ function init() {
 
     // I couldn't figure out how to have one listener to process 
     // all the quadrants.
-    document.getElementById('c0r0').addEventListener('click', handleChoicec0r0)
-    document.getElementById('c0r1').addEventListener('click', handleChoicec0r1)
-    document.getElementById('c0r2').addEventListener('click', handleChoicec0r2)
-    document.getElementById('c1r0').addEventListener('click', handleChoicec1r0)
-    document.getElementById('c1r1').addEventListener('click', handleChoicec1r1)
-    document.getElementById('c1r2').addEventListener('click', handleChoicec1r2)
-    document.getElementById('c2r0').addEventListener('click', handleChoicec2r0)
-    document.getElementById('c2r1').addEventListener('click', handleChoicec2r1)
-    document.getElementById('c2r2').addEventListener('click', handleChoicec2r2)
+    c0r0El.addEventListener('click', handleChoicec0r0)
+    c0r1El.addEventListener('click', handleChoicec0r1)
+    c0r2El.addEventListener('click', handleChoicec0r2)
+    c1r0El.addEventListener('click', handleChoicec1r0)
+    c1r1El.addEventListener('click', handleChoicec1r1)
+    c1r2El.addEventListener('click', handleChoicec1r2)
+    c2r0El.addEventListener('click', handleChoicec2r0)
+    c2r1El.addEventListener('click', handleChoicec2r1)
+    c2r2El.addEventListener('click', handleChoicec2r2)
 
     // assign our vars to the starting values
     board = [  // col 0    col1    col2
@@ -265,15 +274,15 @@ function renderControls() {
     // This code is not really working. I don't know why. I need to 
     // short-circuit the click event on a quadrant by checking to see
     // if a winner had been declared yet.
-    document.getElementById('c0r0').removeEventListener('click', doNothing)
-    document.getElementById('c0r1').removeEventListener('click', doNothing)
-    document.getElementById('c0r2').removeEventListener('click', doNothing)
-    document.getElementById('c1r0').removeEventListener('click', doNothing)
-    document.getElementById('c1r1').removeEventListener('click', doNothing)
-    document.getElementById('c1r2').removeEventListener('click', doNothing)
-    document.getElementById('c2r0').removeEventListener('click', doNothing)
-    document.getElementById('c2r1').removeEventListener('click', doNothing)
-    document.getElementById('c2r2').removeEventListener('click', doNothing)
+    c0r0El.removeEventListener('click', doNothing)
+    c0r1El.removeEventListener('click', doNothing)
+    c0r2El.removeEventListener('click', doNothing)
+    c1r0El.removeEventListener('click', doNothing)
+    c1r1El.removeEventListener('click', doNothing)
+    c1r2El.removeEventListener('click', doNothing)
+    c2r0El.removeEventListener('click', doNothing)
+    c2r1El.removeEventListener('click', doNothing)
+    c2r2El.removeEventListener('click', doNothing)
   }
 }
 
