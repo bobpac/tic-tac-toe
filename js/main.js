@@ -27,7 +27,6 @@ let error = 0 // number
 
 /*----- cached elements  -----*/
 
-// getting our message place
 const messageEl = document.querySelector('h2')
 const errMessageEl = document.querySelector('h3')
 const playBtn = document.querySelector('button')
@@ -80,6 +79,7 @@ function handlcChoice(colIdx,rowIdx)
     // For some reason, I couldn't get removeListener
     // to work. So, by putting in this check for 
     // winner === null, it short-circuits the click event
+    // when the game is over
     if ( winner === null ) 
     {
       error = 0; // re-init error. 
